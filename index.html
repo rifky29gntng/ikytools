@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Fitur Toolkit</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --primary: #00f3ff;
+            --secondary: #ff00ff;
+            --accent: #39ff14;
+            --dark: #0f1123;
+            --darker: #090a1a;
+            --error: #ff3333;
+            --text: #ffffff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            padding-bottom: 60px;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(0, 243, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 40% 80%, rgba(57, 255, 20, 0.15) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        /* Header Styles */
+        .main-header {
+            background: rgba(15, 17, 35, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(0, 243, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+        }
+        
+        .main-header h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+        
+        .main-nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        
+        .main-nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .main-nav a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.3), transparent);
+            transition: all 0.5s ease;
+        }
+        
+        .main-nav a:hover::before {
+            left: 100%;
+        }
+        
+        .main-nav a.active {
+            background: rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 10px var(--primary), 0 0 20px var(--primary);
+            color: var(--primary);
+        }
+        
+        /* Neon Effects */
+        .neon-primary {
+            color: var(--primary);
+            text-shadow: 
+                0 0 5px var(--primary),
+                0 0 10px var(--primary),
+                0 0 20px var(--primary),
+                0 0 40px var(--primary);
+            animation: pulsate-primary 2s infinite alternate;
+        }
+        
+        .neon-secondary {
+            color: var(--secondary);
+            text-shadow: 
+                0 0 5px var(--secondary),
+                0 0 10px var(--secondary),
+                0 0 20px var(--secondary),
+                0 0 40px var(--secondary);
+            animation: pulsate-secondary 2s infinite alternate;
+        }
+        
+        .neon-accent {
+            color: var(--accent);
+            text-shadow: 
+                0 0 5px var(--accent),
+                0 0 10px var(--accent),
+                0 0 20px var(--accent),
+                0 0 40px var(--accent);
+            animation: pulsate-accent 2s infinite alternate;
+        }
+        
+        @keyframes pulsate-primary {
+            0% {
+                text-shadow: 
+                    0 0 5px var(--primary),
+                    0 0 10px var(--primary),
+                    0 0 20px var(--primary),
+                    0 0 40px var(--primary);
+            }
+            100% {
+                text-shadow: 
+                    0 0 7px var(--primary),
+                    0 0 15px var(--primary),
+                    0 0 30px var(--primary),
+                    0 0 60px var(--primary);
+            }
+        }
+        
+        @keyframes pulsate-secondary {
+            0% {
+                text-shadow: 
+                    0 0 5px var(--secondary),
+                    0 0 10px var(--secondary),
+                    0 0 20px var(--secondary),
+                    0 0 40px var(--secondary);
+            }
+            100% {
+                text-shadow: 
+                    0 0 7px var(--secondary),
+                    0 0 15px var(--secondary),
+                    0 0 30px var(--secondary),
+                    0 0 60px var(--secondary);
+            }
+        }
+        
+        @keyframes pulsate-accent {
+            0% {
+                text-shadow: 
+                    0 0 5px var(--accent),
+                    0 0 10px var(--accent),
+                    0 0 20px var(--accent),
+                    0 0 40px var(--accent);
+            }
+            100% {
+                text-shadow: 
+                    0 0 7px var(--accent),
+                    0 0 15px var(--accent),
+                    0 0 30px var(--accent),
+                    0 0 60px var(--accent);
+            }
+        }
+        
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            text-align: center;
+            padding: 3rem 1rem;
+            margin-bottom: 2rem;
+            border-radius: 15px;
+            background: rgba(15, 17, 35, 0.5);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+        }
+        
+        .hero-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-section p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        /* Feature Grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .feature-card {
+            background: rgba(15, 17, 35, 0.6);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            animation: float 3s ease-in-out infinite;
+            animation-delay: calc(var(--delay) * 0.5s);
+        }
+        
+        .feature-card:nth-child(1) { --delay: 1; }
+        .feature-card:nth-child(2) { --delay: 2; }
+        .feature-card:nth-child(3) { --delay: 3; }
+        .feature-card:nth-child(4) { --delay: 4; }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            border-color: var(--primary);
+            box-shadow: 
+                0 0 10px rgba(0, 243, 255, 0.5),
+                0 0 20px rgba(0, 243, 255, 0.3);
+        }
+        
+        .feature-card i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card p {
+            opacity: 0.8;
+        }
+        
+        /* Music Controls */
+        .music-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 99;
+        }
+        
+        .music-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(15, 17, 35, 0.8);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+        }
+        
+        .music-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px var(--primary);
+        }
+        
+        .music-btn.pulse {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 243, 255, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(0, 243, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 243, 255, 0);
+            }
+        }
+        
+        /* Footer */
+        .main-footer {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(15, 17, 35, 0.8);
+            backdrop-filter: blur(5px);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            border-top: 1px solid rgba(0, 243, 255, 0.3);
+        }
+        
+        /* Loader and Error */
+        .loader {
+            border: 5px solid rgba(15, 17, 35, 0.3);
+            border-radius: 50%;
+            border-top: 5px solid var(--primary);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            color: var(--error);
+            text-align: center;
+            padding: 20px;
+            text-shadow: 0 0 5px rgba(255, 51, 51, 0.7);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .main-header h1 {
+                font-size: 2rem;
+            }
+            
+            .main-nav ul {
+                gap: 0.5rem;
+            }
+            
+            .hero-section h2 {
+                font-size: 2rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .music-controls {
+                bottom: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header dan navigasi utama -->
+    <header class="main-header">
+        <h1 class="neon-primary"><i class="fas fa-toolbox"></i> Multi-Fitur Toolkit</h1>
+        <nav class="main-nav">
+            <ul>
+                <li><a href="#home" class="nav-link active">Beranda</a></li>
+                <li><a href="#telegram-bot" class="nav-link">Telegram Bot</a></li>
+                <li><a href="#telegram-attacker" class="nav-link">Telegram Attacker</a></li>
+                <li><a href="#telegram-attacker" class="nav-link">Create Web</a></li>
+                <li><a href="#ngl-spammer" class="nav-link">NGL Spammer</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <!-- Section Beranda -->
+        <section id="home" class="content-section active">
+            <div class="hero-section">
+                <h2 class="neon-primary">Selamat Datang di Multi-Fitur Toolkit</h2>
+                <p>Kumpulan alat dan utilitas untuk berbagai keperluan dengan desain neon futuristik</p>
+            </div>
+            
+            <div class="feature-grid">
+                <div class="feature-card" data-target="#tele">
+                    <i class="fab fa-telegram neon-secondary"></i>
+                    <h3>Telegram Bot Manager</h3>
+                    <p>Kelola dan edit informasi bot Telegram dengan mudah</p>
+                </div>
+                
+                <div class="feature-card" data-target="#bug">
+                    <i class="fas fa-bolt neon-accent"></i>
+                    <h3>Telegram Attacker</h3>
+                    <p>Alat untuk menguji ketahanan grup Telegram</p>
+                </div>
+                
+                <div class="feature-card" data-target="#cweb">
+                    <i class="fas fa-code neon-primary"></i>
+                    <h3>Create Web</h3>
+                    <p>Buat dan deploy website dengan mudah</p>
+                </div>
+                
+                <div class="feature-card" data-target="#ngl">
+                    <i class="fas fa-envelope neon-secondary"></i>
+                    <h3>NGL Spammer</h3>
+                    <p>Kirim pesan ke akun NGL</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section Telegram Bot Manager -->
+        <section id="telegram-cheker" class="content-section">
+            <div class="loader"></div>
+            <div class="error-message" style="display: none;">
+                Gagal memuat konten Telegram Bot. Pastikan file 'Telegram-Cheker.html' tersedia.
+            </div>
+        </section>
+
+        <!-- Section Telegram Attacker -->
+        <section id="telegram-bug" class="content-section">
+            <div class="loader"></div>
+            <div class="error-message" style="display: none;">
+                Gagal memuat konten Telegram Attacker. Pastikan file 'Telegram-Bug.html' tersedia.
+            </div>
+        </section>
+
+        <!-- Section Create Web -->
+        <section id="create-web" class="content-section">
+            <div class="loader"></div>
+            <div class="error-message" style="display: none;">
+                Gagal memuat konten Create Web. Pastikan file 'create-web.html' tersedia.
+            </div>
+        </section>
+
+        <!-- Section NGL Spammer -->
+        <section id="ngl-spam" class="content-section">
+            <div class="loader"></div>
+            <div class="error-message" style="display: none;">
+                Gagal memuat konten NGL Spammer. Pastikan file 'Ngl-Spam.html' tersedia.
+            </div>
+        </section>
+    </main>
+
+    <!-- Musik Controls -->
+    <div class="music-controls">
+        <button class="music-btn pulse" id="play-btn">
+            <i class="fas fa-play"></i>
+        </button>
+        <button class="music-btn" id="stop-btn">
+            <i class="fas fa-stop"></i>
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <p>© 2025 Multi-Fitur Toolkit | Hak Cipta Dilindungi</p>
+    </footer>
+
+    <!-- Audio Element -->
+    <audio id="bg-music" loop>
+        <source src="https://files.catbox.moe/wq8fow.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
+
+    <script>
+        // Navigation
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active nav link
+                document.querySelectorAll('.nav-link').forEach(navLink => {
+                    navLink.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Show corresponding section
+                const targetId = this.getAttribute('href');
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                const targetSection = document.querySelector(targetId);
+                targetSection.classList.add('active');
+                
+                // Load external content if needed
+                loadExternalContent(targetId);
+            });
+        });
+
+        // Feature cards navigation
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                
+                // Update active nav link
+                document.querySelectorAll('.nav-link').forEach(navLink => {
+                    navLink.classList.remove('active');
+                    if (navLink.getAttribute('href') === targetId) {
+                        navLink.classList.add('active');
+                    }
+                });
+                
+                // Show corresponding section
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                const targetSection = document.querySelector(targetId);
+                targetSection.classList.add('active');
+                
+                // Load external content if needed
+                loadExternalContent(targetId);
+            });
+        });
+
+        // Function to load external content
+        function loadExternalContent(sectionId) {
+            let fileName = '';
+            
+            switch(sectionId) {
+                case '#telegram-bot':
+                    fileName = 'telegram-cheker.html';
+                    break;
+                case '#telegram-attacker':
+                    fileName = 'telegram-bug.html';
+                    break;
+                case '#create-web':
+                    fileName = 'create-web.html';
+                    break;
+                case '#ngl-spammer':
+                    fileName = 'ngl-spam.html';
+                    break;
+                default:
+                    return; // Home section doesn't need external content
+            }
+            
+            const sectionElement = document.querySelector(sectionId);
+            const loader = sectionElement.querySelector('.loader');
+            const errorMessage = sectionElement.querySelector('.error-message');
+            
+            // Show loader, hide error message
+            loader.style.display = 'block';
+            errorMessage.style.display = 'none';
+            
+            // Check if content is already loaded
+            if (sectionElement.getAttribute('data-loaded') === 'true') {
+                loader.style.display = 'none';
+                return;
+            }
+            
+            // Fetch external content
+            fetch(fileName)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('File not found');
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    // Remove loader and add the content
+                    loader.style.display = 'none';
+                    sectionElement.innerHTML = html;
+                    sectionElement.setAttribute('data-loaded', 'true');
+                    
+                    // Reinitialize any necessary scripts for the loaded content
+                    initSectionScripts(sectionId);
+                })
+                .catch(error => {
+                    console.error('Error loading content:', error);
+                    loader.style.display = 'none';
+                    errorMessage.style.display = 'block';
+                });
+        }
+        
+        // Function to initialize scripts for a specific section
+        function initSectionScripts(sectionId) {
+            // Initialize scripts based on the section
+            switch(sectionId) {
+                case '#telegram-attacker':
+                    initTelegram-Bug();
+                    break;
+                case '#telegram-bot':
+                    initTelgram-Cheker();
+                    break;
+                case '#create-web':
+                    initCreate-Web();
+                    break;
+                case '#ngl-spammer':
+                    initNgl-Spam();
+                    break;
+            }
+            
+            // Reapply neon effects to new content
+            addNeonEffects();
+        }
+        
+        // Placeholder functions for section initialization
+        function initTelegramBug() {
+            // Initialize Telegram Attacker functionality
+            const intensitySlider = document.getElementById('attack-intensity');
+            const intensityValue = document.getElementById('intensity-value');
+            
+            if (intensitySlider && intensityValue) {
+                intensitySlider.addEventListener('input', function() {
+                    intensityValue.textContent = this.value;
+                });
+            }
+            
+            // Add other Telegram Attacker specific initializations here
+        }
+        
+        function initTelegram-Cheker() {
+            // Initialize Telegram Bot functionality
+            // Add Telegram Bot specific initializations here
+        }
+        
+        function initCreate-Web() {
+            // Initialize Create Web functionality
+            // Add Create Web specific initializations here
+        }
+        
+        function initNgl-Spam() {
+            // Initialize NGL Spammer functionality
+            // Add NGL Spammer specific initializations here
+        }
+
+        // Music controls
+        const audio = document.getElementById('bg-music');
+        const playBtn = document.getElementById('play-btn');
+        const stopBtn = document.getElementById('stop-btn');
+
+        playBtn.addEventListener('click', function() {
+            audio.play();
+            this.classList.add('pulse');
+            stopBtn.classList.remove('pulse');
+        });
+
+        stopBtn.addEventListener('click', function() {
+            audio.pause();
+            this.classList.add('pulse');
+            playBtn.classList.remove('pulse');
+        });
+
+        // Form interactions
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn')) {
+                e.target.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                });
+                
+                e.target.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                });
+            }
+        });
+
+        // Neon effects for text elements
+        function addNeonEffects() {
+            const titles = document.querySelectorAll('h1, h2, h3');
+            titles.forEach(title => {
+                if (!title.classList.contains('neon-primary') && 
+                    !title.classList.contains('neon-secondary') && 
+                    !title.classList.contains('neon-accent')) {
+                    title.classList.add('neon-primary');
+                }
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            addNeonEffects();
+            
+            // Add animation to feature cards
+            document.querySelectorAll('.feature-card').forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+            
+            // Load content for active section if not home
+            const activeSection = document.querySelector('.content-section.active');
+            if (activeSection && activeSection.id !== 'home') {
+                loadExternalContent('#' + activeSection.id);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGL Spammer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #0a0a1a;
+            color: #fff;
+            line-height: 1.6;
+            padding: 20px;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 0, 222, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 195, 255, 0.1) 0%, transparent 20%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: rgba(10, 15, 30, 0.8);
+            border-radius: 16px;
+            box-shadow: 0 0 20px rgba(106, 17, 203, 0.4),
+                        0 0 40px rgba(37, 117, 252, 0.2);
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(106, 17, 203, 0.3);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 36px;
+            background: linear-gradient(to right, #ff00de, #6a11cb, #2575fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255, 0, 222, 0.5),
+                         0 0 20px rgba(255, 0, 222, 0.3),
+                         0 0 30px rgba(255, 0, 222, 0.2);
+            animation: neonPulse 2s infinite alternate;
+        }
+        
+        .description {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #a0a0d0;
+            font-size: 16px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #d0d0ff;
+            text-shadow: 0 0 5px rgba(106, 17, 203, 0.5);
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid rgba(106, 17, 203, 0.5);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: rgba(15, 20, 40, 0.7);
+            color: #fff;
+            box-shadow: 0 0 10px rgba(106, 17, 203, 0.3);
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #6a11cb;
+            box-shadow: 0 0 15px rgba(106, 17, 203, 0.7);
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 14px;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(106, 17, 203, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-3px);
+            box-shadow: 0 0 15px rgba(106, 17, 203, 0.7),
+                        0 0 25px rgba(37, 117, 252, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        button:disabled {
+            background: #444;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        #music-btn {
+            background: linear-gradient(to right, #ff00de, #ff2a7a);
+            box-shadow: 0 0 10px rgba(255, 0, 222, 0.5);
+        }
+        
+        #music-btn:hover {
+            box-shadow: 0 0 15px rgba(255, 0, 222, 0.7),
+                        0 0 25px rgba(255, 42, 122, 0.4);
+        }
+        
+        .result {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: rgba(40, 167, 69, 0.15);
+            display: none;
+            border-left: 4px solid #28a745;
+            color: #d4edda;
+        }
+        
+        .success {
+            display: block;
+            box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+        }
+        
+        .error {
+            display: block;
+            background-color: rgba(220, 53, 69, 0.15);
+            border-left: 4px solid #dc3545;
+            color: #f8d7da;
+            box-shadow: 0 0 10px rgba(220, 53, 69, 0.3);
+        }
+        
+        .logs {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: rgba(30, 30, 30, 0.7);
+            color: #d4d4d4;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+            display: none;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(106, 17, 203, 0.3);
+        }
+        
+        .log-entry {
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #3c3c3c;
+        }
+        
+        .timestamp {
+            color: #9e9e9e;
+        }
+        
+        .log-msg {
+            color: #4ec9b0;
+        }
+        
+        .log-err {
+            color: #f44747;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @keyframes neonPulse {
+            from {
+                text-shadow: 0 0 10px rgba(255, 0, 222, 0.5),
+                             0 0 20px rgba(255, 0, 222, 0.3),
+                             0 0 30px rgba(255, 0, 222, 0.2);
+            }
+            to {
+                text-shadow: 0 0 15px rgba(255, 0, 222, 0.7),
+                             0 0 25px rgba(255, 0, 222, 0.5),
+                             0 0 40px rgba(255, 0, 222, 0.3);
+            }
+        }
+        
+        .music-controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .volume-control {
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        .volume-control input {
+            box-shadow: none;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>NGL Spammer</h1>
+        <p class="description">Kirim pesan spam ke akun NGL dengan mudah</p>
+        
+        <div class="music-controls">
+            <button id="music-btn">Putar Musik</button>
+        </div>
+        <div class="input-group volume-control">
+            <label for="volume">Volume Musik</label>
+            <input type="range" id="volume" min="0" max="1" step="0.1" value="0.5">
+        </div>
+        
+        <div class="input-group">
+            <label for="username">Username NGL atau URL</label>
+            <input type="text" id="username" placeholder="Masukkan username (contoh: Dinz) atau URL (contoh: https://ngl.link/rkyyzz)">
+        </div>
+        
+        <div class="input-group">
+            <label for="message">Pesan</label>
+            <textarea id="message" placeholder="Masukkan pesan yang ingin dikirim"></textarea>
+        </div>
+        
+        <div class="input-group">
+            <label for="count">Jumlah Spam</label>
+            <input type="number" id="count" placeholder="Masukkan jumlah spam (contoh: 5)" min="1" max="50" value="5">
+        </div>
+        
+        <div class="button-group">
+            <button id="submit-btn">Mulai Spam</button>
+            <button id="stop-btn" style="display:none;">Berhenti</button>
+        </div>
+        
+        <div id="result" class="result"></div>
+        
+        <div id="logs" class="logs"></div>
+    </div>
+
+    <audio id="bg-music" loop>
+        <source src="https://files.catbox.moe/wq8fow.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const usernameInput = document.getElementById('username');
+            const messageInput = document.getElementById('message');
+            const countInput = document.getElementById('count');
+            const submitBtn = document.getElementById('submit-btn');
+            const stopBtn = document.getElementById('stop-btn');
+            const resultDiv = document.getElementById('result');
+            const logsDiv = document.getElementById('logs');
+            const musicBtn = document.getElementById('music-btn');
+            const bgMusic = document.getElementById('bg-music');
+            const volumeControl = document.getElementById('volume');
+            
+            let isPlaying = false;
+            let isSpamming = false;
+            let currentSpamCount = 0;
+            let totalSpamCount = 0;
+            
+            // Fungsi untuk mengekstrak username dari URL
+            function extractUsername(input) {
+                // Jika input adalah URL, ekstrak username
+                if (input.includes('ngl.link/')) {
+                    const urlParts = input.split('/');
+                    return urlParts[urlParts.length - 1];
+                }
+                // Jika bukan URL, kembalikan input asli
+                return input;
+            }
+            
+            // Kontrol musik
+            musicBtn.addEventListener('click', function() {
+                if (isPlaying) {
+                    bgMusic.pause();
+                    musicBtn.textContent = 'Putar Musik';
+                } else {
+                    bgMusic.play()
+                        .then(() => {
+                            musicBtn.textContent = 'Stop Musik';
+                            isPlaying = true;
+                        })
+                        .catch(error => {
+                            console.error('Error playing audio:', error);
+                            resultDiv.className = 'result error';
+                            resultDiv.textContent = 'Autoplay diblokir. Klik tombol putar lagi.';
+                            resultDiv.style.display = 'block';
+                        });
+                }
+                isPlaying = !isPlaying;
+            });
+            
+            // Kontrol volume
+            volumeControl.addEventListener('input', function() {
+                bgMusic.volume = volumeControl.value;
+            });
+            
+            // Atur volume awal
+            bgMusic.volume = volumeControl.value;
+            
+            // Tombol berhenti
+            stopBtn.addEventListener('click', function() {
+                isSpamming = false;
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Mulai Spam';
+                stopBtn.style.display = 'none';
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `Proses dihentikan. Berhasil mengirim ${currentSpamCount} dari ${totalSpamCount} pesan.`;
+                resultDiv.style.display = 'block';
+            });
+            
+            submitBtn.addEventListener('click', async function() {
+                // Validasi input
+                if (!usernameInput.value || !messageInput.value || !countInput.value) {
+                    showResult('error', 'Masukan username, pesan, dan jumlah spam!\nContoh: Dinz|haloo|5');
+                    return;
+                }
+                
+                const spamCount = parseInt(countInput.value, 10);
+                if (isNaN(spamCount) || spamCount <= 0 || spamCount > 50) {
+                    showResult('error', 'Jumlah spam harus berupa angka antara 1-50!');
+                    return;
+                }
+                
+                // Ekstrak username dari input
+                const username = extractUsername(usernameInput.value.trim());
+                
+                // Nonaktifkan tombol selama proses
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="spinner"></span> Mengirim pesan...';
+                stopBtn.style.display = 'block';
+                resultDiv.className = 'result';
+                logsDiv.style.display = 'block';
+                logsDiv.innerHTML = '';
+                
+                isSpamming = true;
+                currentSpamCount = 0;
+                totalSpamCount = spamCount;
+                
+                try {
+                    await sendSpamMessage(username, messageInput.value, spamCount);
+                    if (isSpamming) {
+                        showResult('success', `Sukses mengirim ${spamCount} pesan NGL ke ${username}`);
+                    }
+                } catch (e) {
+                    console.error(e);
+                    if (isSpamming) {
+                        showResult('error', 'Terjadi kesalahan: ' + e.message);
+                    }
+                } finally {
+                    // Aktifkan kembali tombol
+                    isSpamming = false;
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = 'Mulai Spam';
+                    stopBtn.style.display = 'none';
+                }
+            });
+            
+            async function sendSpamMessage(username, message, spamCount) {
+                let counter = 0;
+                
+                while (counter < spamCount && isSpamming) {
+                    const date = new Date();
+                    const minutes = date.getMinutes().toString().padStart(2, '0');
+                    const hours = date.getHours().toString().padStart(2, '0');
+                    const formattedDate = `${hours}:${minutes}`;
+                    
+                    try {
+                        // Generate random deviceId (menggunakan crypto browser)
+                        const array = new Uint8Array(21);
+                        window.crypto.getRandomValues(array);
+                        const deviceId = Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+                        
+                        // Coba beberapa endpoint API yang mungkin
+                        const apiEndpoints = [
+                            'https://ngl.link/api/submit',
+                            'https://ngl.link/api/submit/new'
+                        ];
+                        
+                        let success = false;
+                        
+                        for (const url of apiEndpoints) {
+                            try {
+                                const headers = {
+                                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0',
+                                    'Accept': '*/*',
+                                    'Accept-Language': 'en-US,en;q=0.5',
+                                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'Sec-Fetch-Dest': 'empty',
+                                    'Sec-Fetch-Mode': 'cors',
+                                    'Sec-Fetch-Site': 'same-origin',
+                                    'Referer': `https://ngl.link/${username}`,
+                                    'Origin': 'https://ngl.link'
+                                };
+                                
+                                const body = `username=${encodeURIComponent(username)}&question=${encodeURIComponent(message)}&deviceId=${deviceId}&gameSlug=&referrer=`;
+                                
+                                const response = await fetch(url, {
+                                    method: 'POST',
+                                    headers,
+                                    body,
+                                    mode: 'cors',
+                                    credentials: 'include'
+                                });
+                                
+                                if (response.status === 200) {
+                                    const responseData = await response.text();
+                                    if (responseData.includes("success") || responseData.includes("sent") || responseData === "") {
+                                        counter++;
+                                        currentSpamCount = counter;
+                                        addLog(formattedDate, `Sent: ${counter}/${spamCount} to ${username}`, 'message');
+                                        success = true;
+                                        break;
+                                    } else {
+                                        addLog(formattedDate, `Unexpected response: ${responseData}`, 'error');
+                                    }
+                                } else if (response.status === 429) {
+                                    addLog(formattedDate, `Ratelimited (${response.status}). Menunggu 30 detik...`, 'error');
+                                    await delay(30000); // Tunggu 30 detik jika ratelimited
+                                } else {
+                                    addLog(formattedDate, `Error: Status ${response.status}`, 'error');
+                                }
+                            } catch (error) {
+                                addLog(formattedDate, `API Error: ${error.message}`, 'error');
+                            }
+                        }
+                        
+                        if (!success) {
+                            addLog(formattedDate, `All API endpoints failed for ${username}. Trying alternative method...`, 'error');
+                            
+                            // Coba metode alternatif dengan iframe
+                            try {
+                                await alternativeSendMethod(username, message);
+                                counter++;
+                                currentSpamCount = counter;
+                                addLog(formattedDate, `Alternative method success: ${counter}/${spamCount}`, 'message');
+                            } catch (altError) {
+                                addLog(formattedDate, `Alternative method also failed: ${altError.message}`, 'error');
+                                await delay(5000); // Tunggu 5 detik jika error
+                            }
+                        }
+                        
+                        // Delay antara pengiriman pesan
+                        if (counter < spamCount) {
+                            const randomDelay = Math.floor(Math.random() * 2000) + 1000; // 1-3 detik
+                            await delay(randomDelay);
+                        }
+                    } catch (error) {
+                        addLog(formattedDate, `Unexpected error: ${error.message}`, 'error');
+                        await delay(5000); // Tunggu 5 detik jika error
+                    }
+                }
+            }
+            
+            // Metode alternatif menggunakan iframe (jika API langsung tidak bekerja)
+            async function alternativeSendMethod(username, message) {
+                return new Promise((resolve, reject) => {
+                    try {
+                        const iframe = document.createElement('iframe');
+                        iframe.style.display = 'none';
+                        iframe.src = `https://ngl.link/${username}`;
+                        
+                        iframe.onload = function() {
+                            try {
+                                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                                
+                                // Cari form di dalam iframe
+                                const form = iframeDoc.querySelector('form');
+                                if (form) {
+                                    // Isi form dengan pesan
+                                    const input = form.querySelector('input[type="text"]');
+                                    if (input) {
+                                        input.value = message;
+                                        
+                                        // Submit form
+                                        form.submit();
+                                        setTimeout(() => {
+                                            document.body.removeChild(iframe);
+                                            resolve();
+                                        }, 2000);
+                                    } else {
+                                        document.body.removeChild(iframe);
+                                        reject(new Error('Input not found in form'));
+                                    }
+                                } else {
+                                    document.body.removeChild(iframe);
+                                    reject(new Error('Form not found in iframe'));
+                                }
+                            } catch (e) {
+                                document.body.removeChild(iframe);
+                                reject(e);
+                            }
+                        };
+                        
+                        iframe.onerror = function() {
+                            document.body.removeChild(iframe);
+                            reject(new Error('Iframe loading failed'));
+                        };
+                        
+                        document.body.appendChild(iframe);
+                    } catch (e) {
+                        reject(e);
+                    }
+                });
+            }
+            
+            function delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+            
+            function showResult(type, message) {
+                resultDiv.className = 'result ' + type;
+                resultDiv.textContent = message;
+                resultDiv.style.display = 'block';
+            }
+            
+            function addLog(timestamp, message, type) {
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry';
+                
+                const timeSpan = document.createElement('span');
+                timeSpan.className = 'timestamp';
+                timeSpan.textContent = `[${timestamp}] `;
+                
+                const msgSpan = document.createElement('span');
+                msgSpan.className = type === 'error' ? 'log-err' : 'log-msg';
+                msgSpan.textContent = message;
+                
+                logEntry.appendChild(timeSpan);
+                logEntry.appendChild(msgSpan);
+                logsDiv.appendChild(logEntry);
+                
+                // Scroll ke bawah untuk log terbaru
+                logsDiv.scrollTop = logsDiv.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>

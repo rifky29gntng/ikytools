@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Bot Manager</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0088cc;
+            --primary-dark: #006699;
+            --secondary: #6c757d;
+            --success: #28a745;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gradient-start: #0088cc;
+            --gradient-end: #00ccaa;
+            --neon-primary: #00f3ff;
+            --neon-secondary: #ff00ff;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* Efek neon untuk latar belakang */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0, 243, 255, 0.2) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.2) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px var(--neon-primary), 0 0 20px var(--neon-primary), 0 0 30px var(--neon-primary), 2px 2px 4px rgba(0, 0, 0, 0.2);
+            animation: neon-flicker 2s infinite alternate;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15), 0 0 15px rgba(0, 243, 255, 0.3);
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(5px);
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+        
+        .input-with-icon {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary);
+            font-size: 1.2rem;
+        }
+        
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 18px 20px 18px 55px;
+            border: 2px solid #e1e5eb;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        input[type="text"]:focus, textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 136, 204, 0.2), 0 0 10px rgba(0, 243, 255, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        button {
+            background: linear-gradient(to right, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            padding: 18px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 136, 204, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 136, 204, 0.4), 0 0 15px rgba(0, 243, 255, 0.5);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 30px;
+            border-radius: 12px;
+            background: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
+            display: none;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .result h2 {
+            margin-bottom: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            text-shadow: 0 0 5px rgba(0, 136, 204, 0.3);
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .result-item {
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .result-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1), 0 0 8px rgba(0, 136, 204, 0.2);
+        }
+        
+        .result-label {
+            font-weight: 600;
+            color: var(--secondary);
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+        
+        .result-value {
+            font-size: 1.1rem;
+            font-weight: 500;
+            word-break: break-all;
+        }
+        
+        .error {
+            color: var(--danger);
+            margin-top: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            background-color: rgba(220, 53, 69, 0.1);
+            display: none;
+            border-left: 5px solid var(--danger);
+            font-weight: 500;
+        }
+        
+        .success {
+            color: var(--success);
+            margin-top: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            background-color: rgba(40, 167, 69, 0.1);
+            display: none;
+            border-left: 5px solid var(--success);
+            font-weight: 500;
+        }
+        
+        .loading {
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .note {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #e8f4fc;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        /* Tab Styles */
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e1e5eb;
+        }
+        
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--secondary);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Tombol Musik */
+        .music-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+        
+        .music-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-primary), var(--neon-secondary));
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--neon-primary), 0 0 20px var(--neon-primary);
+            transition: all 0.3s;
+        }
+        
+        .music-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px var(--neon-primary), 0 0 30px var(--neon-primary);
+        }
+        
+        /* Tombol Navigasi */
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .bug-btn {
+            background: linear-gradient(135deg, #ff4d4d, #cc0000);
+            color: white;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+        
+        .checker-btn {
+            background: linear-gradient(135deg, #4dff4d, #00cc00);
+            color: white;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Animasi Neon */
+        @keyframes neon-flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: 0 0 10px var(--neon-primary), 0 0 20px var(--neon-primary), 0 0 30px var(--neon-primary), 2px 2px 4px rgba(0, 0, 0, 0.2);
+            }
+            20%, 24%, 55% {
+                text-shadow: 0 0 5px var(--neon-primary), 0 0 10px var(--neon-primary), 0 0 15px var(--neon-primary), 2px 2px 4px rgba(0, 0, 0, 0.2);
+            }
+        }
+        
+        /* Efek partikel */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(100vw) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+            
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            input[type="text"], textarea {
+                padding: 15px 15px 15px 45px;
+            }
+            
+            .nav-buttons {
+                flex-direction: column;
+            }
+            
+            .music-controls {
+                bottom: 10px;
+                right: 10px;
+            }
+            
+            .music-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                padding: 10px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Efek partikel -->
+    <div class="particles" id="particles"></div>
+    
+    <div class="header">
+        <h1><i class="fab fa-telegram"></i> Telegram Bot Manager</h1>
+        <p>Kelola dan edit informasi bot Telegram dengan mudah</p>
+    </div>
+    
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" data-tab="checker">Bot Checker</div>
+            <div class="tab" data-tab="editor">Bot Editor</div>
+            <div class="tab" data-tab="commands">Bot Commands</div>
+        </div>
+        
+        <!-- Tab 1: Bot Checker -->
+        <div class="tab-content active" id="checker-tab">
+            <div class="input-group">
+                <label for="token"><i class="fas fa-key"></i> Token Bot</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-key input-icon"></i>
+                    <input type="text" id="token" placeholder="Masukkan token bot (contoh: 123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ)" />
+                </div>
+            </div>
+            
+            <button id="check-btn">
+                <i class="fas fa-search"></i> Cek Informasi Bot
+            </button>
+            
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Memeriksa token, harap tunggu...</p>
+            </div>
+            
+            <div class="error" id="error"></div>
+            
+            <div class="result" id="result">
+                <h2><i class="fas fa-robot"></i> Informasi Bot</h2>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="result-label">ID</div>
+                        <div class="result-value" id="bot-id"></div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Nama Bot</div>
+                        <div class="result-value" id="bot-name"></div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Username</div>
+                        <div class="result-value" id="bot-username"></div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Dapat Bergabung ke Grup</div>
+                        <div class="result-value" id="bot-can-join-groups"></div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Dapat Membaca Pesan</div>
+                        <div class="result-value" id="bot-can-read-all-group-messages"></div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Dukungan Inline</div>
+                        <div class="result-value" id="bot-supports-inline-queries"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tab 2: Bot Editor -->
+        <div class="tab-content" id="editor-tab">
+            <div class="input-group">
+                <label for="edit-token"><i class="fas fa-key"></i> Token Bot</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-key input-icon"></i>
+                    <input type="text" id="edit-token" placeholder="Masukkan token bot untuk mengedit" />
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="bot-name-edit"><i class="fas fa-signature"></i> Nama Bot Baru</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-robot input-icon"></i>
+                    <input type="text" id="bot-name-edit" placeholder="Masukkan nama baru untuk bot" />
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="bot-description"><i class="fas fa-align-left"></i> Deskripsi Bot</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-pen input-icon"></i>
+                    <textarea id="bot-description" placeholder="Masukkan deskripsi bot"></textarea>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="bot-about"><i class="fas fa-info-circle"></i> About Text</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-info input-icon"></i>
+                    <textarea id="bot-about" placeholder="Masukkan teks about untuk bot"></textarea>
+                </div>
+            </div>
+            
+            <button id="save-btn">
+                <i class="fas fa-save"></i> Simpan Perubahan
+            </button>
+            
+            <div class="loading" id="edit-loading">
+                <div class="loading-spinner"></div>
+                <p>Menyimpan perubahan, harap tunggu...</p>
+            </div>
+            
+            <div class="error" id="edit-error"></div>
+            <div class="success" id="edit-success"></div>
+        </div>
+        
+        <!-- Tab 3: Bot Commands -->
+        <div class="tab-content" id="commands-tab">
+            <div class="input-group">
+                <label for="commands-token"><i class="fas fa-key"></i> Token Bot</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-key input-icon"></i>
+                    <input type="text" id="commands-token" placeholder="Masukkan token bot untuk mengelola perintah" />
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="bot-commands"><i class="fas fa-terminal"></i> Daftar Perintah</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-code input-icon"></i>
+                    <textarea id="bot-commands" placeholder="Format: command1 - Description\ncommand2 - Another description" rows="5"></textarea>
+                </div>
+                <small>Format: setiap baris berisi perintah dan deskripsi dipisahkan oleh tanda "-"</small>
+            </div>
+            
+            <button id="set-commands-btn">
+                <i class="fas fa-cogs"></i> Set Perintah Bot
+            </button>
+            
+            <div class="loading" id="commands-loading">
+                <div class="loading-spinner"></div>
+                <p>Mengatur perintah bot, harap tunggu...</p>
+            </div>
+            
+            <div class="error" id="commands-error"></div>
+            <div class="success" id="commands-success"></div>
+        </div>
+        
+        <div class="nav-buttons">
+            <a href="https://ikybug.vercel.app" target="_blank" class="nav-btn bug-btn">
+                <i class="fas fa-bug"></i> Bug Telegram
+            </a>
+            <a href="https://ikydeploy.vercel.app" target="_blank" class="nav-btn checker-btn">
+                <i class="fas fa-check-circle"></i> Deploy Web
+            </a>
+        </div>
+        
+        <div class="note">
+            <strong><i class="fas fa-info-circle"></i> Catatan Penting:</strong> 
+            Token bot bersifat rahasia dan seperti kata sandi untuk bot Anda. 
+            Jangan bagikan token Anda dengan orang yang tidak dipercaya. Website ini hanya melakukan 
+            permintaan ke API Telegram dan tidak menyimpan token Anda.
+        </div>
+    </div>
+    
+    <!-- Tombol kontrol musik -->
+    <div class="music-controls">
+        <button class="music-btn" id="play-btn">
+            <i class="fas fa-play"></i>
+        </button>
+        <button class="music-btn" id="stop-btn">
+            <i class="fas fa-stop"></i>
+        </button>
+    </div>
+    
+    <div class="footer">
+        <p>© 2025 Telegram Bot Manager | Hak Cipta Dilindungi</p>
+    </div>
+
+    <!-- Elemen audio -->
+    <audio id="bg-music" loop>
+        <source src="https://files.catbox.moe/wq8fow.mp3" type="audio/mpeg">
+        Browser Anda tidak mendukung elemen audio.
+    </audio>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkBtn = document.getElementById('check-btn');
+            const tokenInput = document.getElementById('token');
+            const loadingElement = document.getElementById('loading');
+            const errorElement = document.getElementById('error');
+            const resultElement = document.getElementById('result');
+            const playBtn = document.getElementById('play-btn');
+            const stopBtn = document.getElementById('stop-btn');
+            const bgMusic = document.getElementById('bg-music');
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const saveBtn = document.getElementById('save-btn');
+            const editTokenInput = document.getElementById('edit-token');
+            const editLoadingElement = document.getElementById('edit-loading');
+            const editErrorElement = document.getElementById('edit-error');
+            const editSuccessElement = document.getElementById('edit-success');
+            const setCommandsBtn = document.getElementById('set-commands-btn');
+            const commandsLoadingElement = document.getElementById('commands-loading');
+            const commandsErrorElement = document.getElementById('commands-error');
+            const commandsSuccessElement = document.getElementById('commands-success');
+            
+            // Inisialisasi partikel
+            createParticles();
+            
+            // Fungsi tab
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    
+                    // Nonaktifkan semua tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(tc => tc.classList.remove('active'));
+                    
+                    // Aktifkan tab yang dipilih
+                    tab.classList.add('active');
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+            
+            // Kontrol musik
+            playBtn.addEventListener('click', function() {
+                // Memastikan audio dimulai dengan interaksi pengguna
+                if (bgMusic.paused) {
+                    const playPromise = bgMusic.play();
+                    
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            // Pemutaran berhasil
+                            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                            playBtn.setAttribute('data-playing', 'true');
+                        }).catch(error => {
+                            console.error("Pemutaran audio gagal:", error);
+                            showMusicError();
+                        });
+                    }
+                } else {
+                    bgMusic.pause();
+                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    playBtn.setAttribute('data-playing', 'false');
+                }
+            });
+            
+            stopBtn.addEventListener('click', function() {
+                bgMusic.pause();
+                bgMusic.currentTime = 0;
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                playBtn.setAttribute('data-playing', 'false');
+            });
+            
+            // Ganti ikon play/pause
+            bgMusic.addEventListener('play', function() {
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                playBtn.setAttribute('data-playing', 'true');
+            });
+            
+            bgMusic.addEventListener('pause', function() {
+                if (bgMusic.currentTime > 0 && !bgMusic.ended) {
+                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    playBtn.setAttribute('data-playing', 'false');
+                }
+            });
+            
+            // Tampilkan pesan error jika musik tidak dapat diputar
+            function showMusicError() {
+                const musicError = document.createElement('div');
+                musicError.className = 'error';
+                musicError.innerHTML = '<i class="fas fa-volume-mute"></i> Musik tidak dapat diputar. Coba klik tombol play lagi.';
+                musicError.style.position = 'fixed';
+                musicError.style.bottom = '80px';
+                musicError.style.right = '20px';
+                musicError.style.maxWidth = '300px';
+                musicError.style.zIndex = '1000';
+                document.body.appendChild(musicError);
+                
+                setTimeout(() => {
+                    document.body.removeChild(musicError);
+                }, 5000);
+            }
+            
+            // Preload audio untuk meningkatkan keandalan
+            bgMusic.load();
+            
+            // Fungsi cek bot
+            checkBtn.addEventListener('click', function() {
+                const token = tokenInput.value.trim();
+                
+                // Validasi token
+                if (!token) {
+                    showError('Token tidak boleh kosong!', errorElement);
+                    return;
+                }
+                
+                // Format token biasanya seperti: 123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ
+                const tokenPattern = /^\d+:[A-Za-z0-9_-]+$/;
+                if (!tokenPattern.test(token)) {
+                    showError('Format token tidak valid. Token harus dalam format: 123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ', errorElement);
+                    return;
+                }
+                
+                // Sembunyikan error dan hasil sebelumnya
+                hideError(errorElement);
+                hideResult();
+                
+                // Tampilkan loading
+                loadingElement.style.display = 'block';
+                
+                // Panggil API Telegram
+                fetch(`https://api.telegram.org/bot${token}/getMe`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Token tidak valid atau terjadi kesalahan');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.ok) {
+                            displayBotInfo(data.result);
+                        } else {
+                            throw new Error('Token tidak valid');
+                        }
+                    })
+                    .catch(error => {
+                        showError(error.message || 'Terjadi kesalahan saat memeriksa token', errorElement);
+                    })
+                    .finally(() => {
+                        loadingElement.style.display = 'none';
+                    });
+            });
+            
+            // Fungsi edit bot
+            saveBtn.addEventListener('click', function() {
+                const token = editTokenInput.value.trim();
+                const name = document.getElementById('bot-name-edit').value.trim();
+                const description = document.getElementById('bot-description').value.trim();
+                const about = document.getElementById('bot-about').value.trim();
+                
+                // Validasi token
+                if (!token) {
+                    showError('Token tidak boleh kosong!', editErrorElement);
+                    return;
+                }
+                
+                const tokenPattern = /^\d+:[A-Za-z0-9_-]+$/;
+                if (!tokenPattern.test(token)) {
+                    showError('Format token tidak valid.', editErrorElement);
+                    return;
+                }
+                
+                // Validasi setidaknya satu field terisi
+                if (!name && !description && !about) {
+                    showError('Setidaknya satu field harus diisi!', editErrorElement);
+                    return;
+                }
+                
+                // Sembunyikan pesan sebelumnya
+                hideError(editErrorElement);
+                hideSuccess(editSuccessElement);
+                
+                // Tampilkan loading
+                editLoadingElement.style.display = 'block';
+                
+                // Array untuk menyimpan semua promise
+                const promises = [];
+                
+                // Jika nama diisi, update nama
+                if (name) {
+                    promises.push(
+                        fetch(`https://api.telegram.org/bot${token}/setMyName`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ name: name })
+                        })
+                        .then(response => response.json())
+                    );
+                }
+                
+                // Jika deskripsi diisi, update deskripsi
+                if (description) {
+                    promises.push(
+                        fetch(`https://api.telegram.org/bot${token}/setMyDescription`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ description: description })
+                        })
+                        .then(response => response.json())
+                    );
+                }
+                
+                // Jika about diisi, update about
+                if (about) {
+                    promises.push(
+                        fetch(`https://api.telegram.org/bot${token}/setMyShortDescription`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ short_description: about })
+                        })
+                        .then(response => response.json())
+                    );
+                }
+                
+                // Jalankan semua promise
+                Promise.all(promises)
+                    .then(results => {
+                        const hasError = results.some(result => !result.ok);
+                        
+                        if (hasError) {
+                            showError('Beberapa perubahan gagal disimpan. Pastikan token valid dan memiliki izin yang cukup.', editErrorElement);
+                        } else {
+                            showSuccess('Perubahan berhasil disimpan!', editSuccessElement);
+                        }
+                    })
+                    .catch(error => {
+                        showError('Terjadi kesalahan: ' + error.message, editErrorElement);
+                    })
+                    .finally(() => {
+                        editLoadingElement.style.display = 'none';
+                    });
+            });
+            
+            // Fungsi set commands
+            setCommandsBtn.addEventListener('click', function() {
+                const token = document.getElementById('commands-token').value.trim();
+                const commandsText = document.getElementById('bot-commands').value.trim();
+                
+                // Validasi token
+                if (!token) {
+                    showError('Token tidak boleh kosong!', commandsErrorElement);
+                    return;
+                }
+                
+                const tokenPattern = /^\d+:[A-Za-z0-9_-]+$/;
+                if (!tokenPattern.test(token)) {
+                    showError('Format token tidak valid.', commandsErrorElement);
+                    return;
+                }
+                
+                // Validasi commands
+                if (!commandsText) {
+                    showError('Daftar perintah tidak boleh kosong!', commandsErrorElement);
+                    return;
+                }
+                
+                // Parse commands
+                const commands = [];
+                const lines = commandsText.split('\n');
+                
+                for (const line of lines) {
+                    const parts = line.split('-');
+                    if (parts.length >= 2) {
+                        const command = parts[0].trim();
+                        const description = parts.slice(1).join('-').trim();
+                        
+                        if (command && description) {
+                            commands.push({ command, description });
+                        }
+                    }
+                }
+                
+                if (commands.length === 0) {
+                    showError('Format perintah tidak valid. Gunakan format: command - description', commandsErrorElement);
+                    return;
+                }
+                
+                // Sembunyikan pesan sebelumnya
+                hideError(commandsErrorElement);
+                hideSuccess(commandsSuccessElement);
+                
+                // Tampilkan loading
+                commandsLoadingElement.style.display = 'block';
+                
+                // Set commands melalui API
+                fetch(`https://api.telegram.org/bot${token}/setMyCommands`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ commands: commands })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.ok) {
+                        showSuccess('Perintah berhasil disimpan!', commandsSuccessElement);
+                    } else {
+                        throw new Error(data.description || 'Gagal menyimpan perintah');
+                    }
+                })
+                .catch(error => {
+                    showError('Terjadi kesalahan: ' + error.message, commandsErrorElement);
+                })
+                .finally(() => {
+                    commandsLoadingElement.style.display = 'none';
+                });
+            });
+            
+            function displayBotInfo(botInfo) {
+                document.getElementById('bot-id').textContent = botInfo.id;
+                document.getElementById('bot-name').textContent = botInfo.first_name;
+                document.getElementById('bot-username').textContent = '@' + botInfo.username;
+                document.getElementById('bot-can-join-groups').textContent = botInfo.can_join_groups ? 'Ya' : 'Tidak';
+                document.getElementById('bot-can-read-all-group-messages').textContent = botInfo.can_read_all_group_messages ? 'Ya' : 'Tidak';
+                document.getElementById('bot-supports-inline-queries').textContent = botInfo.supports_inline_queries ? 'Ya' : 'Tidak';
+                
+                // Isi juga form edit
+                document.getElementById('bot-name-edit').value = botInfo.first_name;
+                document.getElementById('edit-token').value = tokenInput.value;
+                
+                resultElement.style.display = 'block';
+                
+                // Animasi untuk hasil
+                const resultItems = document.querySelectorAll('.result-item');
+                resultItems.forEach((item, index) => {
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(20px)';
+                    item.style.transition = 'opacity 0.5s, transform 0.5s';
+                    
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateY(0)';
+                    }, 100 + (index * 100));
+                });
+            }
+            
+            function showError(message, element) {
+                element.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+                element.style.display = 'block';
+                
+                // Animasi error
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(-10px)';
+                element.style.transition = 'opacity 0.3s, transform 0.3s';
+                
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, 10);
+            }
+            
+            function showSuccess(message, element) {
+                element.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+                element.style.display = 'block';
+                
+                // Animasi success
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(-10px)';
+                element.style.transition = 'opacity 0.3s, transform 0.3s';
+                
+                setTimeout(() => {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }, 10);
+            }
+            
+            function hideError(element) {
+                element.style.display = 'none';
+                element.textContent = '';
+            }
+            
+            function hideSuccess(element) {
+                element.style.display = 'none';
+                element.textContent = '';
+            }
+            
+            function hideResult() {
+                resultElement.style.display = 'none';
+            }
+            
+            // Fungsi untuk membuat partikel
+            function createParticles() {
+                const particlesContainer = document.getElementById('particles');
+                const particleCount = 30;
+                
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    // Ukuran acak
+                    const size = Math.random() * 5 + 2;
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    
+                    // Posisi acak
+                    particle.style.left = `${Math.random() * 100}vw`;
+                    particle.style.top = `${Math.random() * 100}vh`;
+                    
+                    // Warna acak (putih atau biru muda)
+                    const colors = ['rgba(255, 255, 255, 0.7)', 'rgba(0, 243, 255, 0.5)', 'rgba(255, 0, 255, 0.5)'];
+                    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    // Animasi dengan durasi acak
+                    const duration = Math.random() * 20 + 15;
+                    particle.style.animationDuration = `${duration}s`;
+                    particle.style.animationDelay = `${Math.random() * 5}s`;
+                    
+                    particlesContainer.appendChild(particle);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
