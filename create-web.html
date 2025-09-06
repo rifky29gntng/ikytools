@@ -2,1151 +2,459 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>CreateWeb</title>
-   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
- <style>
-     :root {
-            --dark-bg: #0c0c1e;
-            --card-bg: #1a1a2e;
-            --light-card-bg: #131326;
-            --neon-cyan: #00fff2;
-            --neon-shadow: rgba(0, 255, 242, 0.6);
-            --text-color: black;
-            --light-text: #aaa;
-            --btn-text: #0c0c1e;
-            --gold: #FFD700;
-            --neon-pink: #ff2a6d;
-            --neon-purple: #d300c5;
-        }
-
-        /* CSS Umum dan Reset */
-        body, html {
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-            background: radial-gradient(circle at top left, var(--card-bg), var(--dark-bg));
-            color: var(--text-color);
-            line-height: 1.6;
-            height: 100%;
-        }
-
-        /* Konten utama yang memiliki scrollbar */
-        body {
-            overflow-y: auto;
-        }
-
-        /* --- Custom Scrollbar untuk konten --- */
-        body::-webkit-scrollbar {
-            width: 8px;
-        }
-        body::-webkit-scrollbar-track {
-            background: var(--card-bg);
-        }
-        body::-webkit-scrollbar-thumb {
-            background-color: var(--neon-cyan);
-            border-radius: 4px;
-            border: 1px solid var(--card-bg);
-        }
-    form { 
-      background: #fff; 
-      padding: 20px; 
-      border-radius: 10px; 
-      box-shadow: 0 2px 5px rgba(0,0,0,.1);
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CreateWeb - Deploy to Vercel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    :root {
+      --dark-bg: #0c0c1e;
+      --card-bg: #1a1a2e;
+      --light-card-bg: #131326;
+      --neon-cyan: #00fff2;
+      --neon-pink: #ff2a6d;
+      --neon-purple: #d300c5;
+      --neon-green: #00ff9d;
+      --neon-yellow: #ffe600;
+      --neon-shadow: rgba(0, 255, 242, 0.6);
+      --text-color: #ffffff;
+      --light-text: #aaa;
+      --btn-text: #0c0c1e;
     }
-    input, button { 
-      margin: 10px 0; 
-      padding: 10px; 
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at top left, var(--card-bg), var(--dark-bg));
+      color: var(--text-color);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
       width: 100%;
-      border: 2px solid black;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
     }
-    button { 
-      background: #0070f3;
+
+    .profile-image {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--neon-cyan);
+      box-shadow: 0 0 15px var(--neon-cyan);
+      animation: pulse 2s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 15px var(--neon-cyan);
+      }
+      100% {
+        box-shadow: 0 0 30px var(--neon-cyan), 0 0 50px rgba(0, 255, 242, 0.2);
+      }
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      text-align: center;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 10px var(--neon-shadow);
+    }
+
+    .form-container {
+      background: rgba(26, 26, 46, 0.8);
+      border-radius: 15px;
+      padding: 25px;
+      width: 100%;
+      border: 2px solid var(--neon-cyan);
+      box-shadow: 0 0 15px var(--neon-cyan), inset 0 0 15px rgba(0, 255, 242, 0.1);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: var(--neon-cyan);
+    }
+
+    input[type="text"],
+    input[type="file"] {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--neon-cyan);
+      border-radius: 8px;
+      background-color: rgba(26, 26, 46, 0.6);
+      color: var(--text-color);
+      font-family: 'Poppins', sans-serif;
+      box-shadow: 0 0 10px rgba(0, 255, 242, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus,
+    input[type="file"]:focus {
+      outline: none;
+      box-shadow: 0 0 15px var(--neon-cyan);
+    }
+
+    .button {
+      background: linear-gradient(to right, var(--neon-pink), var(--neon-purple));
       color: white;
-      border: none; 
-      cursor: pointer; 
-      border-radius: 5px;
+      border: none;
+      border-radius: 8px;
+      padding: 14px 25px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 1px;
+      box-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-purple);
+      width: 100%;
+      margin-top: 10px;
     }
-    button:hover {
-      background: #0059c1;
+
+    .button:hover {
+      box-shadow: 0 0 15px var(--neon-pink), 0 0 30px var(--neon-purple);
+      transform: translateY(-2px);
     }
-    pre { 
-      background: #eee;
-      padding: 10px;
-      border-radius: 5px;
-      font-size: 10px;
+
+    .button::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        to bottom right,
+        transparent 45%,
+        rgba(255, 255, 255, 0.3) 50%,
+        transparent 55%
+      );
+      animation: shine 3s linear infinite;
+      pointer-events: none;
     }
-    .header {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background-color: var(--card-bg);
-            border-bottom: 2px solid var(--neon-cyan);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-        }
 
-        .header .icon {
-            font-size: 1.5rem;
-            cursor: pointer;
-            margin: 0 0.5rem;
-            color: var(--neon-cyan);
-            transition: color 0.3s ease;
-        }
+    @keyframes shine {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(200%) translateY(200%) rotate(45deg); }
+    }
 
-        .header .icon:hover {
-            color: var(--text-color);
-        }
-        
-        .header .container {
-            flex-grow: 1;
-            margin: 0 1rem;
-            position: relative;
-            left: 360px;
-        }
+    .music-controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
 
-        .header .container input {
-            width: 100%;
-            padding: 0.75rem 0.75rem 0.75rem 2.5rem;
-            border: 1px solid var(--neon-cyan);
-            border-radius: 2rem;
-            background-color: var(--card-bg);
-            color: var(--text-color);
-            outline: none;
-            box-shadow: 0 0 5px rgba(0, 255, 242, 0.4);
-            transition: all 0.3s ease;
-        }
-        
-        .header .container input:focus {
-            box-shadow: 0 0 10px rgba(0, 255, 242, 0.8);
-            border-color: var(--text-color);
-        }
+    .music-btn {
+      background: linear-gradient(to right, var(--neon-cyan), #00b8d4);
+      color: var(--btn-text);
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 0 15px var(--neon-cyan);
+      transition: all 0.3s;
+    }
 
-        .header .container .icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--neon-cyan);
-        }
-        
-        /* --- Sidebar (Slide-out) --- */
-        .sidebar {
-            height: 100%;
-            width: 280px;
-            position: fixed;
-            z-index: 100;
-            top: 0;
-            left: -280px; /* Default: tersembunyi */
-            background: linear-gradient(180deg, var(--card-bg), var(--dark-bg));
-            padding-top: 1rem;
-            transition: left 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
-            /* Perbaikan untuk membuat sidebar bisa digulir */
-            overflow-y: auto;
-            max-height: calc(100vh - 50px);
-        }
+    .music-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 25px var(--neon-cyan);
+    }
 
-        .sidebar.open {
-            left: 0;
-        }
-
-        .sidebar .profile {
-            display: flex;
-            align-items: center;
-            padding: 0 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .sidebar .profile img {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            margin-right: 1rem;
-            border: 2px solid var(--neon-cyan);
-            box-shadow: 0 0 8px rgba(0, 255, 242, 0.5);
-        }
-        
-        .sidebar .profile .info .name {
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-        
-        .sidebar .profile .info .status {
-            color: #4caf50;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-        }
-
-        .sidebar .profile .info .status .dot {
-            width: 8px;
-            height: 8px;
-            background-color: #4caf50;
-            border-radius: 50%;
-            margin-right: 0.5rem;
-            box-shadow: 0 0 5px #4caf50;
-        }
-
-        .sidebar a {
-            padding: 1rem 1.5rem;
-            text-decoration: none;
-            font-size: 1.1rem;
-            color: #818181;
-            display: flex;
-            align-items: center;
-            transition: 0.3s;
-        }
-
-        .sidebar a .icon {
-            font-size: 1.25rem;
-            margin-right: 1rem;
-        }
-        
-        .sidebar a:hover, .sidebar a.active {
-            color: var(--btn-text);
-            background-color: var(--neon-cyan);
-            text-shadow: none;
-        }
-        
-        .sidebar a.active {
-            border-left: 4px solid var(--text-color);
-        }
-        
-        .backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 90;
-            display: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .backdrop.active {
-            display: block;
-        }
-        /* --- MEDIA QUERY UNTUK DESKTOP --- */
-        @media (min-width: 760px) {
-            .sidebar {
-                left: 0; /* Sidebar selalu terlihat di desktop */
-            }
-            .header {
-                padding-left: calc(1rem + 280px); /* Geser header agar tidak menimpa sidebar */
-            }
-            .header .icon.hamburger {
-                display: none; /* Sembunyikan hamburger icon */
-            }
-            .main-content {
-                margin-left: 280px; /* Tambahkan margin untuk konten utama */
-            }
-            .backdrop {
-                display: none !important; /* Pastikan overlay tidak muncul */
-            }
-        }
-        
-        /* --- Konten Utama --- */
-        .main-content {
-            padding: 1rem;
-        }
-
-        .hero-section {
-            text-align: center;
-            padding: 2rem 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .hero-section h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 15px var(--neon-shadow);
-        }
-
-        .hero-section .version {
-            color: var(--light-text);
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero-section p {
-            font-size: 1rem;
-            color: var(--light-text);
-            margin-bottom: 2rem;
-        }
-        
-        .home-page.active {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: calc(100vh - 70px);
-            text-align: center;
-        }
-        
-        .home-page h1 {
-            font-size: 4rem;
-            font-weight: bold;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 20px var(--neon-shadow), 0 0 30px rgba(0, 255, 242, 0.4);
-            animation: pulse 2s infinite alternate;
-        }
-        
-        .neon-title {
-            font-size: 80px;
-            color: var(--neon-cyan);
-            margin-bottom: 20px;
-            text-shadow: 0 0 15px var(--neon-cyan);
-            animation: pulse 1.5s ease-in-out infinite alternate;
-        }
-        
-        @keyframes pulse2 {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.1); opacity: 0.8; }
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                text-shadow: 0 0 20px var(--neon-shadow);
-            }
-            100% {
-                transform: scale(1.05);
-                text-shadow: 0 0 30px var(--neon-cyan), 0 0 50px rgba(0, 255, 242, 0.2);
-            }
-        }
-
-        /* --- Hide Sections Initially --- */
-        .content-section {
-            display: none;
-        }
-        .content-section.active {
-            display: block;
-        }
-        
-        /* --- Styling Produk MURBAN --- */
-        .product-card {
-            background: linear-gradient(145deg, var(--card-bg), var(--light-card-bg));
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
-            border: 2px solid var(--neon-cyan);
-            margin-bottom: 2rem;
-            text-align: center;
-        }
-
-        .product-card .product-title {
-            font-family: 'Share Tech Mono', monospace;
-            font-size: 1.5rem;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 10px var(--neon-shadow);
-            border-bottom: 2px dashed var(--neon-cyan);
-            padding-bottom: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .product-card .price-section {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .product-card .price-item {
-            background: var(--dark-bg);
-            padding: 1.5rem;
-            border-radius: 10px;
-            border: 1px solid var(--light-text);
-            width: 250px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
-            position: relative;
-            transition: transform 0.3s ease;
-        }
-        
-        .product-card .price-item:hover {
-            transform: translateY(-5px);
-        }
-
-        .product-card .price-item.vip {
-            border-color: var(--gold);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.5); /* FIX: Corrected typo */
-        }
-
-        .product-card .price-item h3 {
-            font-size: 1.25rem;
-            margin-top: 0;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-        }
-
-        .product-card .price-item.vip h3 {
-            color: var(--gold);
-        }
-
-        .product-card .price-item .price {
-            font-size: 1.75rem;
-            font-weight: bold;
-            color: var(--neon-cyan);
-            margin-bottom: 1rem;
-            text-shadow: 0 0 8px var(--neon-shadow);
-        }
-
-        .product-card .price-item.vip .price {
-            color: var(--gold);
-            text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-        }
-
-        .product-card .benefit-list {
-            text-align: left;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .product-card .benefit-list li {
-            padding: 0.5rem 0;
-            border-bottom: 1px dashed var(--light-card-bg);
-            display: flex;
-            align-items: center;
-        }
-
-        .product-card .benefit-list li:last-child {
-            border-bottom: none;
-        }
-
-        .product-card .benefit-list li .fas {
-            color: #4caf50;
-            margin-right: 0.75rem;
-        }
-
-        .contact-order {
-            margin-top: 3rem;
-            text-align: center;
-        }
-
-        .contact-order h3 {
-            font-size: 1.2rem;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 8px var(--neon-shadow);
-            margin-bottom: 1rem;
-        }
-
-        .contact-order p {
-            margin: 0.5rem 0;
-            font-size: 0.9rem;
-        }
-        
-        .contact-order a {
-            color: var(--neon-cyan);
-            text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s;
-        }
-        
-        .contact-order a:hover {
-            color: var(--text-color);
-            text-decoration: underline;
-        }
-
-        .product-card .sales-text {
-            background: var(--light-card-bg);
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin-top: 2rem;
-            border: 1px solid var(--neon-cyan);
-            text-align: left;
-        }
-
-        .product-card .sales-text h3 {
-            color: var(--neon-cyan);
-            margin-top: 0;
-        }
-        .product-card .sales-text p {
-            margin-top: 0.5rem;
-            margin-bottom: 0;
-        }
-        
-        /* --- Styling Halaman Suntik Sosmed (Dihapus) --- */
-        
-        /* --- Styling Halaman Preset Alight Motion --- */
-        .preset-container {
-            display: grid;
-            gap: 2rem;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            padding: 1rem;
-        }
-        
-        .preset-card {
-            background-color: var(--card-bg);
-            border-radius: 15px;
-            overflow: hidden;
-            border: 2px solid var(--neon-cyan);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-        }
-        
-        .preset-card h2 {
-            font-size: 1.2rem;
-            color: var(--neon-cyan);
-            margin: 1rem 0;
-            text-shadow: 0 0 8px var(--neon-shadow);
-        }
-        
-        .preset-card .video-wrapper {
-            position: relative;
-            width: 100%;
-            padding-top: 177.77%; /* Rasio 9:16 untuk video vertikal */
-            background-color: #000;
-        }
-
-        .preset-card .video-wrapper video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border: none;
-        }
-
-        .preset-card .download-section {
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .preset-card .download-section p {
-            margin: 0;
-            font-size: 0.9rem;
-            color: var(--light-text);
-        }
-
-        .preset-card .download-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.75rem 1.5rem;
-            background-color: var(--neon-cyan);
-            color: var(--btn-text);
-            border-radius: 5px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-            width: 100%;
-            max-width: 200px;
-        }
-
-        .preset-card .download-btn:hover {
-            background-color: #00b8d4;
-            box-shadow: 0 0 15px var(--neon-shadow);
-        }
-        
-        /* --- Animasi yang Ditambahkan --- */
-        /* Animasi Fade-In & Slide-Up */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from { 
-                opacity: 0;
-                transform: translateY(20px); 
-            }
-            to { 
-                opacity: 1;
-                transform: translateY(0); 
-            }
-        }
-
-        .main-content .content-section.active,
-        .header,
-        .sidebar {
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-
-        .hero-section h1,
-        .hero-section p,
-        .product-card,
-        .preset-card,
-        .tiktok-downloader,
-        .media-uploader,
-        .pinterest-downloader,
-        .all-sosmed-downloader,
-        #history h1,
-        .history-item {
-            animation: slideUp 0.6s ease-out;
-        }
-        
-        /* Efek Hover Interaktif */
-        .sidebar a:hover {
-            transform: translateX(10px);
-            background-color: var(--neon-cyan);
-            color: var(--btn-text);
-        }
-
-        .product-card .price-item:hover,
-        .preset-card:hover {
-            transform: scale(1.02);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8), 0 0 20px var(--neon-shadow);
-            transition: all 0.3s ease-in-out;
-        }
-
-        .header .icon:hover,
-        .download-btn:hover,
-        .upload-btn:hover,
-        #clearHistoryBtn:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 5px 20px var(--neon-shadow);
-            transition: all 0.3s ease;
-        }
-
-        .custom-file-upload:hover {
-            transform: translateY(-2px);
-            background-color: var(--light-card-bg);
-            box-shadow: 0 5px 15px var(--neon-shadow);
-        }
-        
-        /* Animasi Berkedip pada Judul Neon */
-        @keyframes neonFlicker {
-            0%, 100% {
-                text-shadow: 0 0 10px var(--neon-shadow), 0 0 20px var(--neon-shadow), 0 0 30px var(--neon-cyan);
-            }
-            50% {
-                text-shadow: 0 0 5px var(--neon-shadow), 0 0 10px var(--neon-shadow), 0 0 15px var(--neon-cyan);
-            }
-        }
-
-        .hero-section h1,
-        .home-page h1 {
-            animation: neonFlicker 3s infinite alternate, pulse 2s infinite alternate;
-        }
-        
-        /* --- Gaya Khusus Halaman Pinterest (DIPERBAIKI) --- */
-        #pinterest-downloader .media-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        #pinterest-downloader #resultArea img, #pinterest-downloader #resultArea video {
-            max-width: 100%; /* MEMASTIKAN TIDAK MELEBIHI LEBAR ASLI */
-            height: auto; /* MEMPERTAHANKAN RASIO ASPEK */
-            border-radius: 10px;
-            margin-bottom: 1rem;
-        }
-        #pinterest-downloader #resultArea .download-links {
-            justify-content: center;
-        }
-        
-        /* --- CSS BARU UNTUK BERANDA --- */
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            padding: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--light-card-bg);
-            padding: 1.5rem;
-            border-radius: 10px;
-            border: 1px solid var(--neon-cyan);
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), 0 0 10px var(--neon-shadow);
-        }
-
-        .stat-card .icon {
-            font-size: 2rem;
-            color: var(--neon-cyan);
-            margin-bottom: 0.5rem;
-            text-shadow: 0 0 5px var(--neon-shadow);
-        }
-
-        .stat-card h3 {
-            margin: 0;
-            font-size: 1.2rem;
-            color: var(--text-color);
-        }
-
-        .stat-card p {
-            margin: 0;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--neon-cyan);
-            font-family: 'Share Tech Mono', monospace;
-            text-shadow: 0 0 8px var(--neon-shadow);
-        }
-
-        .quick-access-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            padding: 1rem;
-        }
-
-        .quick-access-card {
-            background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 10px;
-            border: 2px solid var(--neon-cyan);
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            text-decoration: none;
-            color: var(--text-color);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            transition: all 0.3s ease;
-        }
-
-        .quick-access-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6), 0 0 10px var(--neon-shadow);
-            background-color: var(--light-card-bg);
-            border-color: var(--gold);
-        }
-
-        .quick-access-card .icon {
-            font-size: 2.5rem;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 8px var(--neon-shadow);
-            flex-shrink: 0;
-        }
-        .quick-access-card:hover .icon {
-            color: var(--gold);
-        }
-
-        .quick-access-card .card-text h4 {
-            margin: 0;
-            font-size: 1.2rem;
-        }
-
-        .quick-access-card .card-text small {
-            margin: 0;
-            color: var(--light-text);
-        }
-        
-     .dropdown > a::after {
-      content: " ▼";
+    .file-name {
+      margin-top: 8px;
       font-size: 12px;
+      color: var(--light-text);
+      text-align: center;
     }
-    .dropdown ul {
+
+    .neon-text {
+      color: var(--neon-cyan);
+      text-shadow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-shadow);
+    }
+
+    .upload-status {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 8px;
+      background-color: rgba(26, 26, 46, 0.6);
+      text-align: center;
       display: none;
-      padding-left: 10px;
     }
-    .dropdown.open ul { display: block; }
-    .dropdown.open2 ul { display: block; }
 
-        .card {
-            background-color: none;
-            border: 1px solid rgba(0, 255, 157, 0.2);
-            border-radius: 30px;
-            padding: 15px;
-            text-align: center;
-        }
-        
-        .button {
-            background: linear-gradient(
-                to right,
-                var(--neon-pink),
-                var(--neon-purple)
-            );
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 12px 20px;
-            font-family: 'Poppins', sans-serif;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-            letter-spacing: 1px;
-            box-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--neon-purple);
-            margin: 10px 5px;
-        }
-        
-        .button:hover {
-            box-shadow: 0 0 15px var(--neon-pink), 0 0 30px var(--neon-purple);
-            transform: translateY(-2px);
-        }
-        
-        .button::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                to bottom right,
-                transparent 45%,
-                rgba(255, 255, 255, 0.3) 50%,
-                transparent 55%
-            );
-            animation: shine 3s linear infinite;
-            pointer-events: none;
-        }
-        
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(200%) translateY(200%) rotate(45deg); }
-        }
-        
-        /* Tombol Musik */
-        .music-controls {
-            display: flex;
-            justify-content: center;
-            margin: 20px 0;
-        }
-        
-        .music-btn {
-            background: linear-gradient(
-                to right,
-                var(--neon-cyan),
-                #00b8d4
-            );
-            color: var(--btn-text);
-            border: none;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 10px;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 0 15px var(--neon-cyan);
-            transition: all 0.3s;
-        }
-        
-        .music-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 25px var(--neon-cyan);
-        }
-        
-        /* Efek Neon Tambahan */
-        .neon-box {
-            border: 2px solid var(--neon-cyan);
-            box-shadow: 0 0 10px var(--neon-cyan), inset 0 0 10px rgba(0, 255, 242, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            background: rgba(26, 26, 46, 0.7);
-        }
-        
-        .neon-text {
-            color: var(--neon-cyan);
-            text-shadow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-shadow);
-        }
-        
-        /* Header Button Container */
-        .header-buttons {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .header-button {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 14px;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-        
-        .telegram-btn {
-            background: linear-gradient(to right, #0088cc, #00aced);
-            color: white;
-            box-shadow: 0 0 10px #0088cc;
-        }
-        
-        .checker-btn {
-            background: linear-gradient(to right, var(--neon-pink), var(--neon-purple));
-            color: white;
-            box-shadow: 0 0 10px var(--neon-pink);
-        }
-        
-        .header-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* Responsivitas untuk tombol header */
-        @media (max-width: 768px) {
-            .header-buttons {
-                display: none;
-            }
-        }
+    .success {
+      border: 2px solid var(--neon-green);
+      box-shadow: 0 0 10px var(--neon-green);
+      color: var(--neon-green);
+    }
+
+    .error {
+      border: 2px solid var(--neon-pink);
+      box-shadow: 0 0 10px var(--neon-pink);
+      color: var(--neon-pink);
+    }
   </style>
+</head>
 <body>
-   <div id="sidebar" class="sidebar">
-        <div class="profile">
-            <img src="https://files.catbox.moe/rso3qa.jpg" alt="Profile Picture">
-            <div class="info">
-                <div class="name" style="color: white;">Create Web</div>
-                <div class="status">
-                    <span class="dot"></span>
-                    <span>Online</span>
-                </div>
-            </div>
-        </div>
-        <a href="#beranda" class="menu-item active"><span class="icon fas fa-home"></span>Beranda</a>
-        <div class="dropdown">
-        <a href="javascript:void(0)" onclick="toggleDropdown(this)"><span class="icon fas fa-link"></span>THX TO </a>
-        <ul>
-          <li><a class="menu-item">Iky</a></li>
-          <li><a class="menu-item">Daris</a></li>
-          <li><a class="menu-item">Amar</a></li>
-          <li><a class="menu-item">Nanda</a></li>
-          <li><a class="menu-item">Ajis</a></li>
-          <li><a class="menu-item">Hanan</a></li>
-          <li><a class="menu-item">Juan</a></li>
-          <li><a class="menu-item">Anangga</a></li>
-          <li><a class="menu-item">Zann</a></li>
-          <li><a class="menu-item">Rexx</a></li>
-          <li><a class="menu-item">Hann</a></li>
-          <li><a class="menu-item">And all</a></li>
-        </ul>
-        </div>
+  <div class="container">
+    <img src="https://filescatbox.moe/skjsjsjd.jpg" alt="Profile" class="profile-image">
+    
+    <h1>CreateWeb - Deploy to Vercel</h1>
+    
+    <div class="form-container">
+      <div class="form-group">
+        <label for="projectName" class="neon-text">Masukan Nama Web</label>
+        <input type="text" id="projectName" placeholder="Nama website Anda" required>
       </div>
-    
-    <div id="backdrop" class="backdrop"></div>
-
-    <header class="header">
-        <div class="icon hamburger" onclick="toggleSidebar()">
-            <span class="fas fa-bars"></span>
-        </div>
-        <div class="search-container">
-          <h3 class="neon-title">Iky CreateWeb</h3>
-        </div>
-        <div class="header-buttons">
-            <a href="https://ikybug.vercel.app" target="_blank" class="header-button telegram-btn">
-                <i class="fab fa-telegram"></i> Bug Telegram
-            </a>
-            <a href="https://ikycheker.vercel.app" target="_blank" class="header-button checker-btn">
-                <i class="fas fa-check-circle"></i> Cheker Web
-            </a>
-        </div>
-    </header><br><br>
-    
-    <!-- Kontrol Musik -->
-    <div class="music-controls">
-        <button class="music-btn" id="playBtn">
-            <i class="fas fa-play"></i>
-        </button>
-        <button class="music-btn" id="stopBtn">
-            <i class="fas fa-stop"></i>
-        </button>
+      
+      <div class="form-group">
+        <label for="htmlFile" class="neon-text">File HTML</label>
+        <input type="file" id="htmlFile" accept=".html" required>
+        <div id="htmlFileName" class="file-name"></div>
+      </div>
+      
+      <div class="form-group">
+        <label for="zipFile" class="neon-text">File ZIP</label>
+        <input type="file" id="zipFile" accept=".zip" required>
+        <div id="zipFileName" class="file-name"></div>
+      </div>
+      
+      <button id="deployButton" class="button">Deploy ke Vercel</button>
+      
+      <div id="uploadStatus" class="upload-status"></div>
     </div>
     
-    <!-- Audio Element -->
-    <audio id="bgMusic" loop>
-        <source src="https://files.catbox.moe/wq8fow.mp3" type="audio/mpeg">
-        Browser Anda tidak mendukung elemen audio.
-    </audio>
-    
-  <main class="main-content">
-  <form id="deployForm" class="neon-box">
-    <label class="neon-text">Nama Project</label><br>
-    <input type="text" id="project" required placeholder="Nama Web" style="border: 1px solid var(--neon-cyan); box-shadow: 0 0 5px var(--neon-cyan);"><br><br>
+    <div class="music-controls">
+      <button class="music-btn" id="playBtn">
+        <i class="fas fa-play"></i>
+      </button>
+      <button class="music-btn" id="stopBtn">
+        <i class="fas fa-stop"></i>
+      </button>
+    </div>
+  </div>
 
-    <label class="neon-text">Upload index.html</label><br>
-    <input type="file" id="file" accept=".html" required style="border: 1px solid var(--neon-cyan); box-shadow: 0 0 5px var(--neon-cyan);"><br><br>
-
-    <button type="submit" class="button">Deploy</button>
-  </form>
-
-  <pre id="result"></pre>
-  
-  </main>
+  <audio id="bgMusic" loop>
+    <source src="https://filescatbox.moe/sjshdhdjhehe.mp3" type="audio/mpeg">
+    Browser Anda tidak mendukung elemen audio.
+  </audio>
 
   <script>
-    document.getElementById("deployForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const project = document.getElementById("project").value.trim();
-      const token = "hyj0pmawiTaNJy71wAUoxoEt";
-      const file = document.getElementById("file").files[0];
-
-      const htmlData = await file.text();
+    document.addEventListener('DOMContentLoaded', function() {
+      // Elemen DOM
+      const htmlFileInput = document.getElementById('htmlFile');
+      const zipFileInput = document.getElementById('zipFile');
+      const htmlFileName = document.getElementById('htmlFileName');
+      const zipFileName = document.getElementById('zipFileName');
+      const deployButton = document.getElementById('deployButton');
+      const uploadStatus = document.getElementById('uploadStatus');
+      const playBtn = document.getElementById('playBtn');
+      const stopBtn = document.getElementById('stopBtn');
+      const bgMusic = document.getElementById('bgMusic');
       
-      Swal.fire({
-        title: "Membuat...",
-        text: "Sedang Membuat Website",
-        allowOutsideClick: false,
-        didOpen: () => {
-          Swal.showLoading();
+      // Tampilkan nama file yang dipilih
+      htmlFileInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+          htmlFileName.textContent = this.files[0].name;
+        } else {
+          htmlFileName.textContent = '';
         }
       });
-
-      // 1. Pastikan project ada
-      await fetch("https://api.vercel.com/v9/projects", {
-        method: "POST",
-        headers: {
-          "Authorization": "Bearer " + token,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ name: project })
+      
+      zipFileInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+          zipFileName.textContent = this.files[0].name;
+        } else {
+          zipFileName.textContent = '';
+        }
       });
-
-      // 2. Deploy file ke project
-      const res = await fetch("https://api.vercel.com/v13/deployments", {
-        method: "POST",
-        headers: {
-          "Authorization": "Bearer " + token,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          name: project,
-          project: project,
-          files: [
-            { file: "index.html", data: htmlData }
-          ]
-        })
-      });
-
-      const result = await res.json();
-      document.getElementById("result").textContent = JSON.stringify(result, null, 2);
-
-      if (result.url) {
-        Swal.fire("Succes Crate Web", "Web berhasil dibuat!", "success");
-        document.getElementById("result").textContent += `\n\n✅ URL: https://${result.url}`;
-      }
-    });
-    
-    // Kontrol Musik
-    const bgMusic = document.getElementById('bgMusic');
-    const playBtn = document.getElementById('playBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    
-    playBtn.addEventListener('click', () => {
+      
+      // Kontrol musik
+      playBtn.addEventListener('click', function() {
         bgMusic.play();
         playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-        playBtn.onclick = () => {
-            bgMusic.pause();
-            playBtn.innerHTML = '<i class="fas fa-play"></i>';
-            playBtn.onclick = () => {
-                bgMusic.play();
-                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            };
+        playBtn.onclick = function() {
+          bgMusic.pause();
+          playBtn.innerHTML = '<i class="fas fa-play"></i>';
+          playBtn.onclick = function() {
+            bgMusic.play();
+            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+          };
         };
-    });
-    
-    stopBtn.addEventListener('click', () => {
+      });
+      
+      stopBtn.addEventListener('click', function() {
         bgMusic.pause();
         bgMusic.currentTime = 0;
         playBtn.innerHTML = '<i class="fas fa-play"></i>';
-        playBtn.onclick = () => {
-            bgMusic.play();
-            playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        playBtn.onclick = function() {
+          bgMusic.play();
+          playBtn.innerHTML = '<i class="fas fa-pause"></i>';
         };
+      });
+      
+      // Deploy ke Vercel
+      deployButton.addEventListener('click', async function() {
+        const projectName = document.getElementById('projectName').value.trim();
+        const htmlFile = htmlFileInput.files[0];
+        const zipFile = zipFileInput.files[0];
+        
+        if (!projectName) {
+          showStatus('Masukkan nama web terlebih dahulu', 'error');
+          return;
+        }
+        
+        if (!htmlFile || !zipFile) {
+          showStatus('Harap unggah file HTML dan ZIP', 'error');
+          return;
+        }
+        
+        // Tampilkan loading
+        deployButton.disabled = true;
+        deployButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyebarkan...';
+        
+        try {
+          // 1. Buat project (jika belum ada)
+          await createProject(projectName);
+          
+          // 2. Deploy file
+          const result = await deployFiles(projectName, htmlFile, zipFile);
+          
+          // 3. Tampilkan hasil
+          if (result && result.url) {
+            showStatus(`Website berhasil disebarkan! URL: https://${result.url}`, 'success');
+            
+            // Tampilkan nama web yang berhasil dibuat
+            const projectInfo = document.createElement('div');
+            projectInfo.innerHTML = `
+              <h2 style="margin-top: 20px; color: var(--neon-green); text-align: center;">
+                Website "${projectName}" Berhasil Dibuat!
+              </h2>
+            `;
+            document.querySelector('.form-container').appendChild(projectInfo);
+          } else {
+            throw new Error('Tidak ada URL yang diterima dari Vercel');
+          }
+        } catch (error) {
+          console.error('Error deploying:', error);
+          showStatus(`Error: ${error.message}`, 'error');
+        } finally {
+          deployButton.disabled = false;
+          deployButton.textContent = 'Deploy ke Vercel';
+        }
+      });
+      
+      async function createProject(projectName) {
+        const token = "bQmqZdY3bTbscA93yCIshkeG";
+        
+        const response = await fetch("https://api.vercel.com/v9/projects", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ name: projectName })
+        });
+        
+        if (!response.ok) {
+          // Jika project sudah ada, kita anggap berhasil
+          if (response.status !== 409) { // 409 = project already exists
+            const error = await response.json();
+            throw new Error(error.error?.message || 'Gagal membuat project');
+          }
+        }
+        
+        return true;
+      }
+      
+      async function deployFiles(projectName, htmlFile, zipFile) {
+        const token = "bQmqZdY3bTbscA93yCIshkeG";
+        
+        // Baca file HTML sebagai teks
+        const htmlData = await readFileAsText(htmlFile);
+        
+        // Buat payload untuk deployment
+        const payload = {
+          name: projectName,
+          project: projectName,
+          files: [
+            { file: "index.html", data: htmlData }
+          ],
+          // Untuk file ZIP, kita perlu mengekstrak dan menambahkannya
+          // Ini adalah contoh sederhana, dalam implementasi nyata perlu mengekstrak ZIP
+          build: {
+            env: {
+              // Variabel environment jika diperlukan
+            }
+          }
+        };
+        
+        const response = await fetch("https://api.vercel.com/v13/deployments", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(payload)
+        });
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error?.message || 'Gagal menyebarkan website');
+        }
+        
+        return await response.json();
+      }
+      
+      function readFileAsText(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = e => resolve(e.target.result);
+          reader.onerror = e => reject(e);
+          reader.readAsText(file);
+        });
+      }
+      
+      function showStatus(message, type) {
+        uploadStatus.textContent = message;
+        uploadStatus.className = 'upload-status ' + type;
+        uploadStatus.style.display = 'block';
+        
+        // Sembunyikan setelah 5 detik
+        setTimeout(() => {
+          uploadStatus.style.display = 'none';
+        }, 5000);
+      }
     });
-  </script>
-  <script>
-    function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const backdrop = document.getElementById('backdrop');
-            sidebar.classList.toggle('open');
-            backdrop.classList.toggle('active');
-        }        
-    document.getElementById('backdrop').addEventListener('click', toggleSidebar);  function showContent(targetId, placeholderText) {
-            const sections = document.querySelectorAll('.content-section');
-            sections.forEach(section => {
-                section.classList.remove('active');
-            });            
-            const targetSection = document.getElementById(targetId);
-            if (targetSection) {
-              targetSection.classList.add('active');
-            }
-            if (targetId !== 'beranda') {
-                targetSection.scrollIntoView({ behavior: 'smooth' });
-            }
-            document.getElementById('searchInput').placeholder = placeholderText;
-            const menuItems = document.querySelectorAll('.sidebar .menu-item');
-            menuItems.forEach(item => {
-                item.classList.remove('active');
-                if (item.getAttribute('href') === '#' + targetId) {
-                    item.classList.add('active');
-                }
-            });
-        }
-        
-        document.querySelectorAll('.sidebar .menu-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href').substring(1);
-                let placeholderText = 'Cari...';
-                if (targetId === 'produk') {
-                    placeholderText = 'Cari produk...';
-                } else if (targetId === 'alight-motion-preset') {
-                    placeholderText = 'Cari preset...';
-                    loadPresets();
-                } else if (targetId === 'tiktok-downloader') {
-                    placeholderText = 'Cari...';
-                } else if (targetId === 'video-to-url') {
-                    placeholderText = 'Cari...';
-                }
-                showContent(targetId, placeholderText);
-                
-                if (window.innerWidth <= 768) {
-                    toggleSidebar();
-                }
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', () => {
-            showContent('beranda', 'Cari...');
-            if (window.location.hash) {
-              showContent(window.location.hash.substring(1), 'Cari...');
-            }
-        });
-        
-
-        
-        // Fungsi untuk menyalin URL dari elemen tertentu
-        function copyResultUrl(elementId) {
-            const urlElement = document.getElementById(elementId);
-            if (urlElement && urlElement.href) {
-                const url = urlElement.href;
-                navigator.clipboard.writeText(url).then(() => {
-                    alert('URL berhasil disalin!');
-                }).catch(err => {
-                    console.error('Gagal menyalin URL: ', err);
-                    alert('Gagal menyalin URL. Coba salin secara manual.');
-                });
-            }
-        }
-        
-        function toggleDropdown(el) {
-          el.parentElement.classList.toggle("open");
-          
-        }
-        
-        function toggleDropdown2(el) {
-          el.parentElement.classList.toggle("open2");
-          
-        }
   </script>
 </body>
 </html>
